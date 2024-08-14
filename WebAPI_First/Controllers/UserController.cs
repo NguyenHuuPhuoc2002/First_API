@@ -74,10 +74,11 @@ namespace WebAPI_First.Controllers
 
 
             };
-            var token = jwtTokenHandler.CreateToken(tokenDescription);
-            var accessToken = jwtTokenHandler.WriteToken(token);
-            var refreshToken = GenerateRefreshToken();
+            var token = jwtTokenHandler.CreateToken(tokenDescription);// tạo token
+            var accessToken = jwtTokenHandler.WriteToken(token);//chuyển đổi đối tượng token thành một chuỗi JWT.
+            var refreshToken = GenerateRefreshToken();// tạo một refresh token mới.
 
+            //Tạo bảng để chứa refresh token trong database 
             //Lưu accessToken vao database
             var refreshTokenEntity = new RefreshToken
             {
@@ -101,21 +102,29 @@ namespace WebAPI_First.Controllers
             };
         }
 
+        //tạo mới token
         private string GenerateRefreshToken()
         {
             var random = new byte[32];
+            //sinh số ngẫu nhiên  
             using (var rng = RandomNumberGenerator.Create())
             {
+                //lưu vào mảng ramdom
                 rng.GetBytes(random);
+                //chuyển mảng byte thành chuỗi Base64
                 return Convert.ToBase64String(random);
             }
         }
 
+    
         [HttpPost("RenewToken")]
         public async Task<IActionResult> RenewToken(TokenModel tokenModel)
         {
+        //check xem token gửi lên nó còn hợp lệ không trước khi cấp phát một access token mới.
             var jwtTokenHandler = new JwtSecurityTokenHandler(); //sử dụng để tạo và viết token JWT.
             var secretKeyBytes = Encoding.UTF8.GetBytes(_appSettings.SecretKey); //Chuyển đổi khóa bí mật thành mảng byte.
+            
+            //Cấu hình
             var tokenValidateParam= new TokenValidationParameters
             {
                 //tự cấp token
@@ -189,7 +198,7 @@ namespace WebAPI_First.Controllers
                     });
                 }
 
-                //check 6: AccessToken ID = JwID in RefreshToken
+                //check 6: AccessToken ID = JwID in RefreshToken // dịch ngược lại để lấy JwtId từ chuỗi token
                 var jti = tokenInverification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
                 if (storedToken.JwtId != jti) 
                 {
@@ -206,7 +215,7 @@ namespace WebAPI_First.Controllers
                 _context.Update(storedToken);
                 await _context.SaveChangesAsync();
 
-                //create new token
+            //create new token
                 var user = await _context.NguoiDungs.SingleOrDefaultAsync(nd => nd.Id == storedToken.UserId);
                 var token = await GenerateToken(user);
                 return Ok(new ApiResponse
