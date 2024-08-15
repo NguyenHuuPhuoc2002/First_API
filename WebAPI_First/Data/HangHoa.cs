@@ -14,6 +14,7 @@ namespace WebAPI_First.Data
         public string TenHh { get; set; }
 
         public string Mota { get; set; }
+        public string Hinh { get; set; }
 
         [Range(0, double.MaxValue)]
         public double DonGia { get; set; }
@@ -26,9 +27,9 @@ namespace WebAPI_First.Data
 
         public ICollection<DonHangChiTiet> donHangChiTiets { get; set; }
 
-        public HangHoa()
+       /* public HangHoa()
         {
             donHangChiTiets = new List<DonHangChiTiet>();
-        }
+        }*/
     }
 }

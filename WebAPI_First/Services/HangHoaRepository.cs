@@ -54,14 +54,15 @@ namespace WebAPI_First.Services
                  TenLoai = hh.Loai.TenLoai,
              }); */
             //  return result.ToList();
-            var result = PaginatedList<WebAPI_First.Data.HangHoa>.Create(allProducts, page, PAGE_SIZE);
+            /*var result = PaginatedList<WebAPI_First.Data.HangHoa>.Create(allProducts, page, PAGE_SIZE);
             return result.Select(hh => new HangHoaModel
             {
                 MaHangHoa = hh.MaHh,
                 TenHangHoa = hh.TenHh,
                 DonGia = hh.DonGia,
                 TenLoai = hh.Loai?.TenLoai
-            }).ToList();
+            }).ToList();*/
+            return null;
         }
 
        
